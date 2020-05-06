@@ -1,0 +1,4 @@
+#Wed May 06 15:20:39 EEST 2020
+base.0=/Users/roxana.popescu/AndroidStudioProjects/KotlinCodelabs/AKF4/DessertClicker-Starter/app/build/intermediates/dex/debug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
