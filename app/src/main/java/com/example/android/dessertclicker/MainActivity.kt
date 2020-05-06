@@ -18,7 +18,6 @@ package com.example.android.dessertclicker
 
 import android.content.ActivityNotFoundException
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -29,12 +28,19 @@ import com.example.android.dessertclicker.databinding.ActivityMainBinding
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        const val KEY_REVENUE = "revenue_key"
+        const val KEY_DESSERT_SOLD = "dessert_sold_key"
+        const val KEY_TIMER_SECONDS = "timer_seconds_key"
+    }
 
     private var revenue = 0
     private var dessertsSold = 0
+    private lateinit var dessertTimer: DessertTimer
 
     // Contains all the views
     private lateinit var binding: ActivityMainBinding
+
 
     /** Dessert Data **/
 
@@ -65,7 +71,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-     //   Log.i("MainActivity", "onCreate Called")
+
+        //   Log.i("MainActivity", "onCreate Called")
         Timber.i("onCreate called")
 
         // Use Data Binding to get reference to the views
@@ -74,7 +81,15 @@ class MainActivity : AppCompatActivity() {
         binding.dessertButton.setOnClickListener {
             onDessertClicked()
         }
+        dessertTimer = DessertTimer(this.lifecycle)
+        //  dessertTimer.startTimer()
 
+        if (savedInstanceState != null) {
+            revenue = savedInstanceState.getInt(Companion.KEY_REVENUE, 0)
+            dessertTimer.secondsCount =
+                    savedInstanceState.getInt(Companion.KEY_TIMER_SECONDS, 0)
+           showCurrentDessert()
+        }
         // Set the TextViews to the right values
         binding.revenue = revenue
         binding.amountSold = dessertsSold
@@ -85,10 +100,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-       // Log.i("MainActivity", "onStart Called")
+        // Log.i("MainActivity", "onStart Called")
 
         Timber.i("onStart Called")
     }
+
     override fun onResume() {
         super.onResume()
         Timber.i("onResume Called")
@@ -101,6 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        //  dessertTimer.stopTimer()
         Timber.i("onStop Called")
     }
 
@@ -112,6 +129,15 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         Timber.i("onRestart Called")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(Companion.KEY_REVENUE, revenue)
+        outState.putInt(Companion.KEY_DESSERT_SOLD, dessertsSold)
+        outState.putInt(Companion.KEY_TIMER_SECONDS, dessertTimer.secondsCount)
+
+        Timber.i("onSaveInstanceState Called")
     }
 
     /**
@@ -180,4 +206,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 }
